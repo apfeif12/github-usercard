@@ -1,8 +1,23 @@
+import axios from 'axios'
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+
+function githubCard(name) {
+  axios.get('https://api.github.com/users/' + name)
+    .then(res => {
+      const gitData = res.data;
+      const card = cardMaker(gitData)
+      document.querySelector('.cards').appendChild(card)
+    })
+    .catch(drama => {
+      console.log(drama.res)
+    })
+}
+githubCard('apfeif12');
+
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +43,72 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ["tetondan",
+  "dustinmyers",
+  "justsml",
+  "luishrd",
+  "bigknell",
+];
+
+
+followersArray.forEach(item => {
+  axios.get('https://api.github.com/users/' + item)
+    .then(res => {
+      const gitData = res.data;
+      const card = cardMaker(gitData)
+      document.querySelector('.cards').appendChild(card)
+    })
+    .catch(drama => {
+      console.log(drama.res)
+    })
+})
+
+
+
+
+
+function cardMaker(data) {
+  const cardDiv = document.createElement('div');
+  const img = document.createElement('img')
+  const infoDiv = document.createElement('div');
+  const h3 = document.createElement('h3');
+  const usernameP = document.createElement('p');
+  const locationP = document.createElement('p');
+  const profileP = document.createElement('p');
+  const followersP = document.createElement('p');
+  const followingP = document.createElement('p');
+  const bioP = document.createElement('p');
+  const a = document.createElement('a');
+
+  cardDiv.appendChild(img);
+  cardDiv.appendChild(infoDiv);
+  infoDiv.appendChild(h3);
+  infoDiv.appendChild(usernameP);
+  infoDiv.appendChild(locationP);
+  infoDiv.appendChild(profileP);
+  infoDiv.appendChild(followersP);
+  infoDiv.appendChild(followingP);
+  infoDiv.appendChild(bioP);
+  profileP.appendChild(a);
+
+  cardDiv.classList.add("card");
+  infoDiv.classList.add("card-info");
+  h3.classList.add("name");
+  usernameP.classList.add("username");
+
+  img.src = data.avatar_url;
+  h3.textContent = data.name;
+  usernameP.textContent = data.login;
+  locationP.textContent = "Location: " + data.location;
+  profileP.textContent = "Profile: ";
+  a.textContent = data.html_url;
+  a.href = data.html_url;
+  followersP.textContent = "Followers: " + data.followers;
+  followingP.textContent = "Following: " + data.following;
+  bioP.textContent = data.bio;
+
+  return cardDiv
+}
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
